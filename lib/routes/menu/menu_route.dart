@@ -1,4 +1,4 @@
-import 'package:projet/routes/home/home_route.dart';
+import 'package:guilbertemmaflutterproject/routes/home/home_route.dart';
 import 'package:flutter/material.dart';
 
 class MenuRoute extends StatelessWidget {

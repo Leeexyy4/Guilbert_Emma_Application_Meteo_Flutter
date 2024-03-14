@@ -1,6 +1,7 @@
-import 'package:projet/routes/home/home_route.dart';
-import 'package:projet/routes/menu/menu_route.dart';
+import 'package:guilbertemmaflutterproject/routes/home/home_route.dart';
 import 'package:flutter/material.dart';
+
+import '../routes/menu/menu_route.dart';
 
 class ImcApp extends StatelessWidget {
   const ImcApp({super.key});

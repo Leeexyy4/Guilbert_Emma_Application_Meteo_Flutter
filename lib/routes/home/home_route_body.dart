@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:projet/common/imc.dart';
-import 'package:projet/common/square.dart';
-import 'package:projet/common/taille.dart';
+import 'package:guilbertemmaflutterproject/common/imc.dart';
+import 'package:guilbertemmaflutterproject/common/square.dart';
+import 'package:guilbertemmaflutterproject/common/taille.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

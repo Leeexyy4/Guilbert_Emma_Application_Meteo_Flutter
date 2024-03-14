@@ -1,6 +1,5 @@
-
+import 'package:guilbertemmaflutterproject/routes/home/home_route_body.dart';
 import 'package:flutter/material.dart';
-import 'package:projet/routes/home/home_route_body.dart';
 
 class HomeRoute extends StatelessWidget {
   const HomeRoute({super.key});
@@ -11,7 +10,7 @@ class HomeRoute extends StatelessWidget {
 
       // Appbar
       appBar: AppBar(
-        title: const Text("Bienvenue sur mon application"),
+        title: const Text("IMC Calculator"),
       ),
 
       // Contenu de la page

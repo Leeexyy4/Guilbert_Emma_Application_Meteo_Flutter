@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'app/imc_app.dart';
+import 'app/meteo_app.dart';
 
 void main() {
-  runApp(const ImcApp());
+  runApp(const MeteoApp());
 }
 
 class MyApp extends StatelessWidget {

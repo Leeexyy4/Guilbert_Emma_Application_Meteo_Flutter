@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:guilbertemmaflutterproject/api/api.dart';
+import 'package:guilbertemmaflutterproject/common/colors/mycolors.dart';
 import 'package:http/http.dart' as http;
 
 class HomeRouteBody extends StatefulWidget {
@@ -13,15 +15,15 @@ class HomeRouteBody extends StatefulWidget {
 class _HomeRouteBodyState extends State<HomeRouteBody> {
   // Les variables du body
   Map<String, dynamic>? data;
-  String ville = '';
-  double temp = 0.0;
-  String icon = '';
-  String image = '';
-  TextEditingController villeController = TextEditingController();
+  String? ville;
+  double? temp;
+  String? icon;
+  String? image = 'https://openweathermap.org/img/wn/01d@2x.png';
+  TextEditingController? villeController = TextEditingController();
 
   Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=bc16736a58f4db063a654f1dbeb84df7&units=metric'));
+      final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData.apikey}&units=metric&lang=fr'));
       if (response.statusCode == 200) {
         setState(() {
           data = json.decode(response.body);
@@ -29,7 +31,6 @@ class _HomeRouteBodyState extends State<HomeRouteBody> {
               icon = data!['weather'][0]['icon'];
               image = "https://openweathermap.org/img/wn/$icon@2x.png";
               temp = data!['main']['temp'];
-              print("$temp");
           }
         });
       } else {
@@ -49,6 +50,9 @@ class _HomeRouteBodyState extends State<HomeRouteBody> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Image.network(image!),
+        Text("Ma position\n$ville",style: const TextStyle(fontSize: 20, color: MyColors.purple), textAlign: TextAlign.center),
+        Text("$temp°",style: const TextStyle(fontSize: 35, color: MyColors.purple), textAlign: TextAlign.center),
         TextField(
           controller: villeController,
           decoration: const InputDecoration(
@@ -66,11 +70,7 @@ class _HomeRouteBodyState extends State<HomeRouteBody> {
           child: const Text('Fetch Data'),
         ),
         const SizedBox(height: 20),
-        Image.network(image),
         Text(data.toString()),
-        Text("La ville choisie est : $ville"),
-        Text("L'icon de l'image est : $icon" ),
-        Text("La température de la ville est : $temp" ),
       ],
     );
   }

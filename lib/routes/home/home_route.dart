@@ -8,11 +8,13 @@ import '../ville/ville_route_body.dart';
 class HomeRoute extends StatefulWidget {
   const HomeRoute({Key? key}) : super(key: key);
 
+
   @override
   State<HomeRoute> createState() => _HomeRouteState();
 }
 
 class _HomeRouteState extends State<HomeRoute> {
+  // Les variables du body
   int _selectedIndex = 0;
   Widget _bodyMenu = const HomeRouteBody();
 
@@ -43,7 +45,7 @@ class _HomeRouteState extends State<HomeRoute> {
     return Scaffold(
       appBar: AppBar(
           title: const Text("Meteo - Emma Guilbert"),
-          flexibleSpace: Image.asset("assets/img/logosidebarapplimeteo.png", fit: BoxFit.cover)
+          flexibleSpace: Image.asset("assets/img/logo/logosidebarapplimeteo.png", fit: BoxFit.cover)
       ),
       body:  Center(child: _bodyMenu),
       bottomNavigationBar: BottomNavigationBar(
@@ -70,4 +72,5 @@ class _HomeRouteState extends State<HomeRoute> {
       ),
     );
   }
+
 }

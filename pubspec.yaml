@@ -63,8 +63,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/img/logoapplimeteo.png
-     - assets/img/logosidebarapplimeteo.png
+     - assets/img/logo/logoapplimeteo.png
+     - assets/img/logo/logosidebarapplimeteo.png
+     - assets/img/interface_home/fleche_haut.png
+     - assets/img/interface_home/fleche_bas.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

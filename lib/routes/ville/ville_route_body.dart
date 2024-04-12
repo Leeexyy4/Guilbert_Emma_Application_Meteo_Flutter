@@ -1,7 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:guilbertemmaflutterproject/common/colors/mycolors.dart';
+import 'package:guilbertemmaflutterproject/common/model/ville.dart';
+import 'package:guilbertemmaflutterproject/common/db/db_helper.dart';
 
 class VilleRouteBody extends StatefulWidget {
   const VilleRouteBody({super.key});
@@ -11,54 +11,64 @@ class VilleRouteBody extends StatefulWidget {
 }
 
 class _VilleRouteBodyState extends State<VilleRouteBody> {
-  // Les variables du body
-  Map<String, dynamic>? data;
-  String? ville = '';
-  double? temp = 0.0;
-  String? icon = '';
-  String? image = 'https://openweathermap.org/img/wn/01d@2x.png';
+  String? ville;
   TextEditingController? villeController = TextEditingController();
+  List<Ville> villes = [];
 
-  Future<void> fetchData() async {
+  Future<void> ajoutVille() async {
     try {
-      final response = await http.get(Uri.parse('http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=bc16736a58f4db063a654f1dbeb84df7&units=metric'));
-      if (response.statusCode == 200) {
-        setState(() {
-          data = json.decode(response.body);
-          if(null != data){
-            icon = data!['weather'][0]['icon'];
-            image = "https://openweathermap.org/img/wn/$icon@2x.png";
-            temp = data!['main']['temp'];
-          }
-        });
-      } else {
-        throw Exception('Failed to load data');
-      }
+      final addville = Ville(ville: ville!);
+      villes.add(addville);
+      await DbHelper.create(addville);
+
+      print(DbHelper.readAllVilles());
+
     } catch (e) {
-      setState(() {
-        data = null;
-      });
+      throw Exception('Failed to add ville');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     // Initialisation des valeurs from SharedPreferences
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Image.network(image!),
-        const Text("Page Ville"),
-        ElevatedButton(
-          onPressed: fetchData,
-          child: const Text('Fetch Data'),
-        ),
-        const SizedBox(height: 20),
-        Text(data.toString()),
+    return
+      Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextField(
+              controller: villeController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Entrer la ville souhaitée',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  ville = value;
+                });
+              },
+            ),
+            SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.shortestSide - MediaQuery.of(context).padding.top,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(ville.toString())
+                  ],
+                ),
+              ),
+            ),
+            FloatingActionButton.extended(
+              onPressed: ajoutVille,
+              label: const Text('Ajouter'),
+              icon: const Icon(Icons.add_location_alt_outlined),
+              foregroundColor: MyColors.purple,
 
-      ],
-    );
+            ),
+          ]
+
+      );
   }
 
 }

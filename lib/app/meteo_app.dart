@@ -4,7 +4,7 @@ import 'package:guilbertemmaflutterproject/routes/accueil/accueil_route.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  DbHelper.initDb();
+  DbHelper.initDB();
   runApp(const MeteoApp());
 }
 

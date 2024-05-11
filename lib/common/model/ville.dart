@@ -21,10 +21,10 @@ class Ville {
   Ville copy({
     int? id,
     String? nom,
-    }) =>
+  }) =>
       Ville(
         id: id ?? this.id,
-        nom: nom ?? this.nom
+        nom: nom ?? this.nom,
       );
 
   static Ville fromJson(Map<String, Object?> json) => Ville(
@@ -37,4 +37,5 @@ class Ville {
     VilleFields.nom: nom,
   };
 
+  int? get getId => id; // Définition du getter getId
 }

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:guilbertemmaflutterproject/common/colors/mycolors.dart';
+import 'package:guilbertemmaflutterproject/common/db/db_helper.dart';
+import 'package:guilbertemmaflutterproject/common/model/ville.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:guilbertemmaflutterproject/api/api.dart';
@@ -22,9 +26,25 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
   String? icon;
   String? image = 'https://openweathermap.org/img/wn/01d@2x.png';
   TextEditingController? villeController = TextEditingController();
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // Appeler fetchData lors de l'initialisation de l'état
+    fetchData();
+    // Définir un Timer.periodic pour mettre à jour les données toutes les minutes
+    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      fetchData();
+    });
+  }
 
   Future<void> fetchData() async {
     try {
+      Ville? villeajt = await DbHelper.readVille(1);
+      if (villeajt != null) {
+        ville = villeajt.nom;
+      }
       final response = await http.get(Uri.parse(
           'http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData
               .apikey}&units=metric&lang=fr'));
@@ -35,8 +55,8 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
             icon = data!['weather'][0]['icon'];
             image = "https://openweathermap.org/img/wn/$icon@2x.png";
             temp = data!['main']['temp'];
-            tempMin = data!['main']['tempMin'];
-            tempMax = data!['main']['tempMax'];
+            tempMin = data!['main']['temp_min'];
+            tempMax = data!['main']['temp_max'];
             meteo = data!['weather'][0]['description'];
           }
         });
@@ -70,6 +90,13 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    // Arrêter le Timer lors de la suppression du widget
+    _timer.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Initialisation des valeurs from SharedPreferences
     return Container(
@@ -78,18 +105,6 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-        TextField(
-          controller: villeController,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: 'Entrer la ville souhaitée',
-          ),
-          onChanged: (value) {
-            setState(() {
-              ville = value;
-            });
-          },
-        ),
         Image.network(image!),
         Text("Ma position\n$ville",style: const TextStyle(fontSize: 20, color: MyColors.purple), textAlign: TextAlign.center),
         Text("$temp°",style: const TextStyle(fontSize: 35, color: MyColors.purple), textAlign: TextAlign.center),
@@ -99,12 +114,8 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
           Image.asset('assets/img/interface_home/fleche_bas.png',width: 20, height: 20),
           Text("$tempMax°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
         ]),
-        ElevatedButton(
-          onPressed: fetchData,
-          child: const Text('Fetch Data'),
-        ),
         const SizedBox(height: 20),
-        Text(data.toString()),
+        //Text(data.toString()),
       ],
         ),
     );

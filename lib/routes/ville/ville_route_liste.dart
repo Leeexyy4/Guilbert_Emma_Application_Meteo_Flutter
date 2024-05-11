@@ -1,48 +1,113 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:guilbertemmaflutterproject/common/model/ville.dart';
 import 'package:guilbertemmaflutterproject/common/db/db_helper.dart';
-import 'ville_route_body.dart';
+import '../../api/api.dart';
 
 class VilleRouteListe extends StatefulWidget {
+  const VilleRouteListe({Key? key}) : super(key: key);
+
   @override
   State<VilleRouteListe> createState() => _VilleRouteListeState();
 }
 
 class _VilleRouteListeState extends State<VilleRouteListe> {
-  // Fonction pour appeler DbHelper.delete
-  void onDeletePressed(int id) async {
+  TextEditingController _villeController = TextEditingController();
+  String? ville;
+
+  Future<void> ajoutVille(String? ville) async {
+    try {
+      if (ville != null) {
+        final response = await http.get(Uri.parse(
+            'http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData.apikey}&units=metric&lang=fr'));
+        if (response.statusCode == 200) {
+          if (await DbHelper.isVillePresent(ville) == false) {
+            final addville = Ville(nom: ville);
+            await DbHelper.create(addville);
+            setState(() {}); // Mettre à jour l'état après l'ajout
+          }
+        } else {
+          throw Exception('Failed to add ville');
+        }
+      }
+    } catch (e) {
+      debugPrint('Failed to add ville : $e');
+    }
+  }
+
+  Future<void> onDeletePressed(int id) async {
     await DbHelper.delete(id);
+    setState(() {}); // Mettre à jour l'état après la suppression
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Ville>>(
       future: DbHelper.readAllVilles(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          final villes = snapshot.data!;
-          return ListView.builder(
-            itemCount: villes.length,
-            itemBuilder: (context, index) {
-              final ville = villes[index];
-              return ListTile(
-                title: Text(ville.nom),
-                trailing: IconButton(
-                  icon: Icon(Icons.keyboard_backspace_outlined),
-                  onPressed: () {
-                    onDeletePressed(ville.id!);
-                    setState(() {}); // Actualise la vue après la suppression
-                  },
-                ),
-              );
-            },
-          );
+      builder: (context, AsyncSnapshot<List<Ville>> snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
         }
+        final villes = snapshot.data!;
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: _villeController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Entrer la ville souhaitée',
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                setState(() {
+                  ville = _villeController.value.text;
+                });
+                await ajoutVille(ville!);
+              },
+              child: const Text('Ajouter'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: villes.length,
+                itemBuilder: (context, index) {
+                  final ville = villes[index];
+                  return ListTile(
+                    title: Text(ville.nom),
+                    leading: Icon(Icons.home_outlined),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete_outline),
+                          onPressed: () async {
+                            await onDeletePressed(ville.id!);
+                            setState(() {}); // Mettre à jour l'état après la suppression
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        );
       },
     );
+  }
+
+
+  @override
+  void dispose() {
+    _villeController.dispose();
+    super.dispose();
   }
 }

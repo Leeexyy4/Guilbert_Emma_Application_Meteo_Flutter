@@ -35,16 +35,8 @@ class DbHelper{
   }
 
   static Future<Ville> create (Ville ville) async {
-
-    //final json = ville.toJson();
-    //final colums =
-    //    '${VilleFields.id}, ${VilleFields.ville}';
-    //final values =
-    //    '${json[VilleFields.id]}, ${json[VilleFields.ville]}';
-    //final id = await db
-    // .rawInsert('INSERT INTO table_name ($colums) VALUES ($values)');
-
-    final id = await db!.insert(tableville, ville.toJson());
+    final nomCapitalize = ville.nom.toLowerCase().replaceRange(0, 1, ville.nom.substring(0, 1).toUpperCase());
+    final id = await db!.insert(tableville, ville.copy(nom: nomCapitalize).toJson());
     return ville.copy(id: id);
   }
 
@@ -53,13 +45,13 @@ class DbHelper{
       tableville,
       columns: [VilleFields.id],
       where: '${VilleFields.nom} = ?',
-      whereArgs: [nomVille],
+      whereArgs: [nomVille.toUpperCase()],
     );
 
     return result.isNotEmpty;
   }
 
-  static Future<Ville> readVille(int id) async {
+  static Future<Ville?> readVille(int id) async {
 
     final maps = await db!.query(
       tableville,

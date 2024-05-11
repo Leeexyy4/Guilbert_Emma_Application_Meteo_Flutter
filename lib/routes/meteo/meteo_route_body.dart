@@ -41,9 +41,17 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
 
   Future<void> fetchData() async {
     try {
-      Ville? villeajt = await DbHelper.readVille(1);
-      if (villeajt != null) {
-        ville = villeajt.nom;
+      final villes = await DbHelper.readAllVilles(); // Récupérer toutes les villes
+      int compteur = 0;
+      for (final ville in villes) {
+        Ville? villeajt = await DbHelper.readVille(
+            ville.id!); // Assurez-vous que l'ID n'est pas null
+        if (villeajt != null && compteur==0) {
+          compteur += 1;
+          setState(() {
+            this.ville = villeajt.nom;
+          });
+        }
       }
       final response = await http.get(Uri.parse(
           'http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData
@@ -105,18 +113,20 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-        Image.network(image!),
-        Text("Ma position\n$ville",style: const TextStyle(fontSize: 20, color: MyColors.purple), textAlign: TextAlign.center),
-        Text("$temp°",style: const TextStyle(fontSize: 35, color: MyColors.purple), textAlign: TextAlign.center),
-        Text("$meteo\n",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [Image.asset("assets/img/interface_home/fleche_haut.png",width: 20, height: 20),
-          Text("$tempMin°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
-          Image.asset('assets/img/interface_home/fleche_bas.png',width: 20, height: 20),
-          Text("$tempMax°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
-        ]),
-        const SizedBox(height: 20),
-        //Text(data.toString()),
-      ],
+            const SizedBox(height: 20),
+            Text("Ma position\n$ville",style: const TextStyle(fontSize: 40, color: MyColors.purple), textAlign: TextAlign.center),
+            Image.network(image!),
+            Text("$meteo\n",style: const TextStyle(fontSize: 20, color: MyColors.purple), textAlign: TextAlign.center),
+          Text("$temp°",style: const TextStyle(fontSize: 55, color: MyColors.purple), textAlign: TextAlign.center),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset("assets/img/interface_home/fleche_haut.png",width: 20, height: 20),
+            Text("$tempMin°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
+            Image.asset('assets/img/interface_home/fleche_bas.png',width: 20, height: 20),
+            Text("$tempMax°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
+          ]),
+            const SizedBox(height: 20),
+          //Text(data.toString()),
+        ],
         ),
     );
   }

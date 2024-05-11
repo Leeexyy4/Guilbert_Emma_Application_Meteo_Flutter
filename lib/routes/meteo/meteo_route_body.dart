@@ -50,13 +50,34 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
     }
   }
 
+  Color? backgroundColor() {
+    try {
+      int today = DateTime.now().hour;
+      Color? background;
+      if (today >= 0 && today <= 12){
+        background = MyColors.beige;
+      }
+      else if (today > 12 && today <= 18){
+        background = MyColors.green;
+      }
+      else if (today > 18 && today <= 23) {
+        background = MyColors.blue;
+      }
+      return background;
+    } catch (e) {
+        throw Exception('Failed to load datetime');
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Initialisation des valeurs from SharedPreferences
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+    return Container(
+        color: backgroundColor(),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
         TextField(
           controller: villeController,
           decoration: const InputDecoration(
@@ -85,6 +106,7 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
         const SizedBox(height: 20),
         Text(data.toString()),
       ],
+        ),
     );
   }
 

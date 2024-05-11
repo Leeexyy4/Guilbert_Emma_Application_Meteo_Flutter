@@ -17,13 +17,13 @@ class DbHelper{
   }
 
   static Future _createDB(Database db, int version) async{
-    final idType = 'INTEGER PRIMARY KEY';
-    final villeType = 'TEXT NOT NULL';
+    const idType = 'INTEGER PRIMARY KEY';
+    const villeType = 'TEXT NOT NULL';
 
     await db.execute('''
     CREATE TABLE if not exists $tableville (
     ${VilleFields.id} $idType,
-    ${VilleFields.ville} $villeType
+    ${VilleFields.nom} $villeType
     );
     ''');
   }
@@ -48,6 +48,17 @@ class DbHelper{
     return ville.copy(id: id);
   }
 
+  static Future<bool> isVillePresent(String nomVille) async {
+    final result = await db!.query(
+      tableville,
+      columns: [VilleFields.id],
+      where: '${VilleFields.nom} = ?',
+      whereArgs: [nomVille],
+    );
+
+    return result.isNotEmpty;
+  }
+
   static Future<Ville> readVille(int id) async {
 
     final maps = await db!.query(
@@ -66,7 +77,7 @@ class DbHelper{
 
   static Future<List<Ville>> readAllVilles() async{
 
-    final order = '${VilleFields.id} ASC';
+    const order = '${VilleFields.id} ASC';
     final result = await db!.query(tableville,orderBy: order);
 
     return result.map((json) => Ville.fromJson(json)).toList();

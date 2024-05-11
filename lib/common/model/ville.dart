@@ -1,40 +1,40 @@
-final String tableville = 'Villes';
+const String tableville = 'Villes';
 
 class VilleFields {
-  static final List<String> values = [
-    id, ville
+  static const List<String> values = [
+    id, nom
   ];
 
-  static final String id = 'id';
-  static final String ville = 'ville';
+  static const String id = 'id';
+  static const String nom = 'nom';
 }
 
 class Ville {
   final int? id;
-  final String ville;
+  final String nom;
 
   const Ville({
     this.id,
-    required this.ville
+    required this.nom
   });
 
   Ville copy({
     int? id,
-    String? ville,
+    String? nom,
     }) =>
       Ville(
         id: id ?? this.id,
-        ville: ville ?? this.ville
+        nom: nom ?? this.nom
       );
 
   static Ville fromJson(Map<String, Object?> json) => Ville(
     id: json[VilleFields.id] as int?,
-    ville: json[VilleFields.ville] as String
+    nom: json[VilleFields.nom] as String
   );
 
   Map<String, Object?> toJson() =>  {
     VilleFields.id: id,
-    VilleFields.ville: ville,
+    VilleFields.nom: nom,
   };
 
 }

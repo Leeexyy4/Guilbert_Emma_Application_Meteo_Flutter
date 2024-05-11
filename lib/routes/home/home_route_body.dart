@@ -12,7 +12,7 @@ class _HomeRouteBodyState extends State<HomeRouteBody> {
   @override
   Widget build(BuildContext context) {
     // Initialisation des valeurs from SharedPreferences
-    return
+    return const
       Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

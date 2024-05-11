@@ -24,7 +24,7 @@ class _AccueilRouteState extends State<AccueilRoute> {
             ),
             ElevatedButton(onPressed: () {
               _goToHome(context);
-            }, style: ElevatedButton.styleFrom(backgroundColor: MyColors.blue, foregroundColor: MyColors.lightgreen ), child: const Icon(Icons.play_arrow_outlined,)),
+            }, style: ElevatedButton.styleFrom(backgroundColor: MyColors.blue, foregroundColor: MyColors.lightgreen ), child: const Icon(Icons.play_arrow_outlined)),
     Container(
       margin: const EdgeInsets.all(20),
     width: 350,

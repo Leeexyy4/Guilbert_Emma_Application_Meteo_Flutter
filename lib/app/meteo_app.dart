@@ -9,7 +9,7 @@ void main() {
 }
 
 class MeteoApp extends StatelessWidget {
-  const MeteoApp({Key? key}) : super(key: key);
+  const MeteoApp({super.key});
 
   @override
   Widget build(BuildContext context) {

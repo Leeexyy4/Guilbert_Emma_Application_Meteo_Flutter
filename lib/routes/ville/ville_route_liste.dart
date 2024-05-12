@@ -2,18 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:guilbertemmaflutterproject/common/model/ville.dart';
 import 'package:guilbertemmaflutterproject/common/db/db_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../api/api.dart';
 
 class VilleRouteListe extends StatefulWidget {
-  const VilleRouteListe({Key? key}) : super(key: key);
+  const VilleRouteListe({super.key});
 
   @override
   State<VilleRouteListe> createState() => _VilleRouteListeState();
 }
 
 class _VilleRouteListeState extends State<VilleRouteListe> {
-  TextEditingController _villeController = TextEditingController();
+  final TextEditingController _villeController = TextEditingController();
   String? ville;
+  late SharedPreferences prefs; // Déclaration de prefs
+
+  @override
+  void initState() {
+    super.initState();
+    loadSharedPreferences(); // Chargement de SharedPreferences
+  }
+
+  Future<void> loadSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {}); // Mettre à jour l'état après le chargement de prefs
+  }
 
   Future<void> ajoutVille(String? ville) async {
     try {
@@ -46,7 +59,7 @@ class _VilleRouteListeState extends State<VilleRouteListe> {
       future: DbHelper.readAllVilles(),
       builder: (context, AsyncSnapshot<List<Ville>> snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         final villes = snapshot.data!;
         return Column(
@@ -59,6 +72,12 @@ class _VilleRouteListeState extends State<VilleRouteListe> {
                 border: OutlineInputBorder(),
                 hintText: 'Entrer la ville souhaitée',
               ),
+              onEditingComplete: () async {
+                setState(() {
+                  ville = _villeController.value.text;
+                });
+                await ajoutVille(ville!);
+              },
             ),
             ElevatedButton(
               onPressed: () async {
@@ -76,20 +95,31 @@ class _VilleRouteListeState extends State<VilleRouteListe> {
                   final ville = villes[index];
                   return ListTile(
                     title: Text(ville.nom),
-                    leading: Icon(Icons.home_outlined),
+                    leading: const Icon(Icons.home_outlined),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
+                          icon: const Icon(Icons.star_outline_sharp),
+                          onPressed: () async {
+                            final favCityId = prefs.getInt('favCityId');
+
+                            if (favCityId == ville.id) {
+                              await prefs.remove('favCityId');
+                            } else {
+                                await prefs.setInt('favCityId', ville.id!);
+                            }
+                            setState(() {});
                           },
+                          color: prefs.getInt('favCityId') == ville.id
+                              ? Colors.yellow
+                              : null,
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete_outline),
+                          icon: const Icon(Icons.delete_outline),
                           onPressed: () async {
                             await onDeletePressed(ville.id!);
-                            setState(() {}); // Mettre à jour l'état après la suppression
+                            setState(() {});
                           },
                         ),
                       ],
@@ -103,7 +133,6 @@ class _VilleRouteListeState extends State<VilleRouteListe> {
       },
     );
   }
-
 
   @override
   void dispose() {

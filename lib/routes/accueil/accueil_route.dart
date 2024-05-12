@@ -14,7 +14,7 @@ class _AccueilRouteState extends State<AccueilRoute> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: MyColors.lightgreen,
+        backgroundColor: MyColors.blue,
         body: Column(
           children: [
             Padding(
@@ -24,13 +24,13 @@ class _AccueilRouteState extends State<AccueilRoute> {
             ),
             ElevatedButton(onPressed: () {
               _goToHome(context);
-            }, style: ElevatedButton.styleFrom(backgroundColor: MyColors.blue, foregroundColor: MyColors.lightgreen ), child: const Icon(Icons.play_arrow_outlined)),
+            }, style: ElevatedButton.styleFrom(backgroundColor: MyColors.green, foregroundColor: MyColors.blue ), child: const Icon(Icons.play_arrow_outlined)),
     Container(
       margin: const EdgeInsets.all(20),
     width: 350,
     height: 150,
     alignment: Alignment.center,
-    child: const Text("Création d'une application météo dans le cadre d'un projet Flutter", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: MyColors.purple) , textAlign: TextAlign.center))
+    child: const Text("Création d'une application météo dans le cadre d'un projet Flutter", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: MyColors.green) , textAlign: TextAlign.center))
           ],
         )
     );

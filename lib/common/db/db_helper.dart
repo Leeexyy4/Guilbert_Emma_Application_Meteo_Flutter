@@ -44,7 +44,7 @@ class DbHelper{
     final result = await db!.query(
       tableville,
       columns: [VilleFields.id],
-      where: '${VilleFields.nom} = ?',
+      where: 'UPPER(${VilleFields.nom}) = ?',
       whereArgs: [nomVille.toUpperCase()],
     );
 

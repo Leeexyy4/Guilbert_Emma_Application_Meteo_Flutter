@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guilbertemmaflutterproject/common/colors/mycolors.dart';
+import 'package:guilbertemmaflutterproject/routes/accueil/accueil_route.dart';
 import 'package:guilbertemmaflutterproject/routes/home/home_route_body.dart';
 
 import '../meteo/meteo_route_body.dart';
@@ -51,7 +52,7 @@ class _HomeRouteState extends State<HomeRoute> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+            icon: Icon(Icons.account_box_outlined),
             label: 'Home',
             backgroundColor: Colors.pink,
           ),

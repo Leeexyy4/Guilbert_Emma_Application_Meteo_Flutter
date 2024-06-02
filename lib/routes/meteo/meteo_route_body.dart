@@ -12,7 +12,6 @@ import 'package:guilbertemmaflutterproject/api/api.dart';
 
 import '../../common/model/ville.dart';
 
-
 class MeteoRouteBody extends StatefulWidget {
   const MeteoRouteBody({super.key});
 
@@ -55,7 +54,6 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
     setState(() {}); // Mettre à jour l'état après le chargement de prefs
   }
 
-
   Future<void> fetchData() async {
     try {
       int compteur = prefs.getInt('favCityId')!;
@@ -66,8 +64,7 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
         });
       }
       final response = await http.get(Uri.parse(
-          'http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData
-              .apikey}&units=metric&lang=fr'));
+          'http://api.openweathermap.org/data/2.5/weather?q=$ville&appid=${ApiData.apikey}&units=metric&lang=fr'));
       if (response.statusCode == 200) {
         setState(() {
           data = json.decode(response.body);
@@ -94,19 +91,17 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
     try {
       int today = DateTime.now().hour;
       Color? background;
-      if (today >= 0 && today <= 12){
+      if (today >= 0 && today <= 12) {
         background = MyColors.rose;
-      }
-      else if (today > 12 && today <= 18){
+      } else if (today > 12 && today <= 18) {
         background = MyColors.green;
-      }
-      else if (today > 18 && today <= 23) {
+      } else if (today > 18 && today <= 23) {
         background = MyColors.blue;
       }
       return background;
     } catch (e) {
-        throw Exception('Failed to load datetime');
-      }
+      throw Exception('Failed to load datetime');
+    }
   }
 
   @override
@@ -120,22 +115,34 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
   Widget build(BuildContext context) {
     // Initialisation des valeurs from SharedPreferences
     return Container(
-        color: backgroundColor(),
-        child: Column(
+      color: backgroundColor(),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-            const SizedBox(height: 20),
-            Text("Ma position\n$ville",style: const TextStyle(fontSize: 40, color: MyColors.purple), textAlign: TextAlign.center),
-            Image.network(image!),
-            Text("$meteo\n",style: const TextStyle(fontSize: 20, color: MyColors.purple), textAlign: TextAlign.center),
-          Text("$temp°",style: const TextStyle(fontSize: 55, color: MyColors.purple), textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          Text("Ma position\n$ville",
+              style: const TextStyle(fontSize: 40, color: MyColors.purple),
+              textAlign: TextAlign.center),
+          Image.network(image!),
+          Text("$meteo\n",
+              style: const TextStyle(fontSize: 20, color: MyColors.purple),
+              textAlign: TextAlign.center),
+          Text("$temp°",
+              style: const TextStyle(fontSize: 55, color: MyColors.purple),
+              textAlign: TextAlign.center),
           const SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Image.asset("assets/img/interface_home/fleche_haut.png",width: 20, height: 20),
-            Text("$tempMin°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
-            Image.asset('assets/img/interface_home/fleche_bas.png',width: 20, height: 20),
-            Text("$tempMax°",style: const TextStyle(fontSize: 15, color: MyColors.purple), textAlign: TextAlign.center),
+            Image.asset("assets/img/interface_home/fleche_haut.png",
+                width: 20, height: 20),
+            Text("$tempMin°",
+                style: const TextStyle(fontSize: 15, color: MyColors.purple),
+                textAlign: TextAlign.center),
+            Image.asset('assets/img/interface_home/fleche_bas.png',
+                width: 20, height: 20),
+            Text("$tempMax°",
+                style: const TextStyle(fontSize: 15, color: MyColors.purple),
+                textAlign: TextAlign.center),
           ]),
           const SizedBox(height: 50),
           WaveWidget(
@@ -150,8 +157,7 @@ class _MeteoRouteBodyState extends State<MeteoRouteBody> {
           ),
           //Text(data.toString()),
         ],
-        ),
+      ),
     );
   }
-
 }
